@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>License Plate Recognition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        form {
+            margin-top: 50px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result {
+            margin-top: 50px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>License Plate Recognition</h1>
+    <form id="upload-form" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <br>
+        <input type="submit" value="Recognize License Plate">
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            fetch('/recognize', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('result').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('result').innerText = 'Detected license plate Number is: ' + data.result;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'An error occurred while processing the request.';
+            });
+        });
+    </script>
+</body>
+</html>
